@@ -62,7 +62,7 @@ def shennon_2(file_name):
     for pair in prob_dict:
         prob = prob_dict[pair]
         probs.append(prob / pair_count)
-    return calc_shennon(probs)
+    return calc_shennon(probs) / 2
 
 
 def shennon_3(file_name):
@@ -81,7 +81,7 @@ def shennon_3(file_name):
     for triplet in prob_dict:
         prob = prob_dict[triplet]
         probs.append(prob / triplets_count)
-    return calc_shennon(probs)
+    return calc_shennon(probs) / 3
 
 
 # gen_1st_file()
