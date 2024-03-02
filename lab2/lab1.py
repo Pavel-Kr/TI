@@ -4,7 +4,7 @@ import math
 alphabet = ['a', 'b', 'c']
 probabilities = [0.1, 0.8, 0.1]
 FILE_SIZE = 14 * 1024 # 14 kB
-eng_alphabet = "abcdefghijklmnopqrstuvwxyz"
+eng_alphabet = "abcdefghijklmnopqrstuvwxyz 0123456789"
 
 
 def gen_1st_file():
@@ -28,7 +28,7 @@ def calc_enthropy(probs):
     return res
 
 
-def shennon(file_name, group_size):
+def enthropy(file_name, group_size):
     prob_dict = {}
     groups_count = 0
     with open(file_name, 'r', encoding='utf_8') as file:
@@ -50,16 +50,16 @@ def shennon(file_name, group_size):
 if __name__ == "__main__":
     files = ["file1.txt", "file2.txt", "file3.txt"]
     for file in files:
-        enthropy = shennon(file, 1)
-        print(f"H1 for file {file} = {round(enthropy, 4)}")
+        ent = enthropy(file, 1)
+        print(f"H1 for file {file} = {round(ent, 4)}")
     print("")
 
     for file in files:
-        enthropy = shennon(file, 2)
-        print(f"H2 for file {file} = {round(enthropy, 4)}")
+        ent = enthropy(file, 2)
+        print(f"H2 for file {file} = {round(ent, 4)}")
     print("")
 
     for file in files:
-        enthropy = shennon(file, 3)
-        print(f"H3 for file {file} = {round(enthropy, 4)}")
+        ent = enthropy(file, 3)
+        print(f"H3 for file {file} = {round(ent, 4)}")
     print("")

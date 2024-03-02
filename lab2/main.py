@@ -1,6 +1,6 @@
 import math
 
-from lab1 import calc_enthropy
+from lab1 import calc_enthropy, enthropy
 
 
 def sort_dict_by_values(d: dict):
@@ -18,7 +18,7 @@ def get_side_of_interval(left, right, value):
     0 - значение в левой половине, 1 - в правой.
     """
     if value < left or value > right:
-        return -1, 0
+        return -1, 0.0
     middle = (left + right) / 2
     if value < middle:
         return 0, middle
@@ -103,6 +103,26 @@ def avg_code_length(probs: dict, encoding: dict):
     return length
 
 
+def encode_file(file_path: str, encoding, suffix: str):
+    path_split = file_path.split('.')
+    path_split[-2] += '_' + suffix
+    out_file_path = '.'.join(path_split)
+    with open(file_path, 'r', encoding='utf_8') as file_in:
+        file_out = open(out_file_path, 'w', encoding='UTF-8')
+        output = ''
+        for line_in in file_in:
+            for sym in line_in:
+                code = encoding.get(sym)
+                if not code:
+                    print(f"Error occured while encoding file {file_path}")
+                    file_out.close()
+                    return
+                output += code
+        file_out.write(output)
+        file_out.close()
+    return out_file_path
+
+
 def encode_text_file(file_path):
     sym_count = 0
     probs = {}
@@ -117,22 +137,30 @@ def encode_text_file(file_path):
             prob = probs[sym] / sym_count
             probs[sym] = prob
         encoding_sh = encode_shennon(probs)
+        file_path_shennon = encode_file(file_path, encoding_sh, 'shennon')
         test = list(zip(probs.keys(), probs.values()))
         encoding_hu = encode_huffman(test)
-        enthropy = calc_enthropy(probs.values())
+        file_path_huffman = encode_file(file_path, encoding_hu, 'huffman')
+        ent = calc_enthropy(probs.values())
         print(f"For file {file_path}:")
         print("\tShennon:")
         print(f"\tEncoding: {encoding_sh}")
         avg_cwl = avg_code_length(probs, encoding_sh)
         print(f"\tAverage code word length: {round(avg_cwl, 4)}")
-        print(f"\tEnthropy = {round(enthropy, 4)}")
-        print(f"\tRedundancy = {round(avg_cwl - enthropy, 4)}")
+        print(f"\tEnthropy = {round(ent, 4)}")
+        print(f"\tRedundancy = {round(avg_cwl - ent, 4)}")
+        for i in range(1, 4):
+            coded_ent = enthropy(file_path_shennon, i)
+            print(f"\tH{i} for {file_path_shennon} = {round(coded_ent, 4)}")
         print("\tHuffman:")
         print(f"\tEncoding: {encoding_hu}")
         avg_cwl = avg_code_length(probs, encoding_hu)
         print(f"\tAverage code word length: {round(avg_cwl, 4)}")
-        print(f"\tEnthropy = {round(enthropy, 4)}")
-        print(f"\tRedundancy = {round(avg_cwl - enthropy, 4)}")
+        print(f"\tEnthropy = {round(ent, 4)}")
+        print(f"\tRedundancy = {round(avg_cwl - ent, 4)}")
+        for i in range(1, 4):
+            coded_ent = enthropy(file_path_huffman, i)
+            print(f"\tH{i} for {file_path_huffman} = {round(coded_ent, 4)}")
 
 
 if __name__ == "__main__":
